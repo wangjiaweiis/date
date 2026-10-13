@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>给你的一封邀请</title>
+    <link rel="stylesheet" href="./dating.css">
+    <!-- 引入截图库CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+    <div class="top-en">IT'S A DATE</div>
+    <div class="heart-circle">
+        <span>♥</span>
+    </div>
+    <h1 id="tittle1">我们的约会，约好啦</h1>
+    <p class="sub-title">接下来只需要期待见面</p>
+
+    <!-- 要截图的区域，id="captureCard" -->
+    <div id="captureCard">
+        <div class="card-box">
+            <div class="item">
+                <div class="item-label">DATE · 约会日期</div>
+                <input type="date" id="dateInput" min="2026-10-17" max="2026-11-08">
+            </div>
+            <div class="item">
+                <div class="item-label">TIME · 见面时间</div>
+                <select id="timeSelect">
+                    <option value="">选一个你有空的吧</option>
+                    <option>12:00</option>
+                    <option>14:00</option>
+                    <option>16:00</option>
+                    <option>17:00</option>
+                    <option>18:00</option>
+                    <option>19:00</option>
+                </select>
+            </div>
+            <div class="item">
+                <div class="item-label">ACTIVITY · 去干什么</div>
+                <select id="actSelect">
+                    <option value="">选一个你想做的吧</option>
+                    <option>去逛商场</option>
+                    <option>去看电影</option>
+                    <option>公园散步</option>
+                    <option>一起逛街</option>
+                    <option>其他（私信告诉我！）</option>
+                </select>
+            </div>
+        </div>
+        <p class="tip-text">"和你见面这件事，光是想想就很开心。"</p>
+    </div>
+
+    <button class="gen-btn" onclick="showResult()">生成约会卡片</button>
+    <button class="reset-btn" onclick="resetAll()">重新填写一次</button>
+</div>
+
+<!-- 截图预览弹窗 -->
+<div class="shot-mask" id="shotMask" onclick="closeShotMask(event)">
+    <div class="shot-popup" onclick="event.stopPropagation()">
+        <img id="previewImg" alt="卡片预览">
+        <button class="save-img-btn" onclick="saveImage()">💾 保存图片</button>
+        <button class="close-shot" onclick="closeShotMask()">关闭</button>
+    </div>
+</div>
+
+<script>
+let imgUrl = "";
+
+function showResult(){
+    const date = document.getElementById('dateInput').value
+    const time = document.getElementById('timeSelect').value
+    const act = document.getElementById('actSelect').value
+    if(!date || !time || !act){
+        alert("日期、时间、活动都要填好哦❤️")
+        return
+    }
+
+    // 生成截图
+    const targetDom = document.getElementById('captureCard')
+    html2canvas(targetDom, {
+        useCORS:true,
+        scale:2, //提高清晰度
+        backgroundColor:"#ffffff"
+    }).then(canvas=>{
+        imgUrl = canvas.toDataURL("image/png");
+        document.getElementById('previewImg').src = imgUrl;
+        //打开弹窗
+        document.getElementById('shotMask').style.display = "flex";
+    })
+}
+
+//保存图片
+function saveImage(){
+    const a = document.createElement("a");
+    a.href = imgUrl;
+    a.download = "约会卡片.png";
+    a.click();
+}
+
+//关闭弹窗
+function closeShotMask(e){
+    if(e && e.target !== document.getElementById('shotMask')) return;
+    document.getElementById('shotMask').style.display = "none";
+}
+
+function resetAll(){
+    document.getElementById('dateInput').value = ""
+    document.getElementById('timeSelect').value = ""
+    document.getElementById('actSelect').value = ""
+}
+</script>
+</body>
+</html>

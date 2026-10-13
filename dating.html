@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./dating.css">
+</head>
+<body>
+  <!-- 页面主体内容，弹窗弹出时这部分会模糊 -->
+  <main class="page-content">
+    <div id="container" >
+      <div class="i" id="toptext">TO :YueQing Zha</div>
+      <img src="./image/envelope.png" class="envelope" onclick="openEnvelope(this)">
+      <div class="i" id="uptext">
+        <p>这是一封来自佳伟的信💌</p>
+        <p>点击打开呦~</p>
+      </div>
+    </div>
+  </main>
+  <!-- 信件弹窗 -->
+  <div class="modal-mask" id="mask" onclick="closeModalByMask(event)">
+    <div class="letter-card" onclick="event.stopPropagation()">
+      <button class="arrow prev" onclick="prevPage()">←</button>
+      <div class="letter-text" id="textBox"></div>
+      <button class="arrow next" onclick="nextPage()">→</button>
+
+      <!-- 第三页按钮组 -->
+      <div class="btn-group" id="page3Btn">
+        <button class="link-btn btn-bounce" onclick="goToNewPage()">我愿意！🤍</button>
+        <button class="tip-btn btn-bounce" onclick="showTip()">考虑一下~✨</button>
+      </div>
+      <!-- 弹出提示标签 -->
+      <div class="tip-box" id="tipBox"></div>
+    </div>
+  </div>
+<script>
+const mask = document.getElementById('mask')
+const textBox = document.getElementById('textBox')
+const page3Btn = document.getElementById('page3Btn')
+const tipBox = document.getElementById('tipBox')
+
+// =====================信件区域，在这里自己填写内容=====================
+const letterList = [
+`
+致亲爱的小池：
+　　当你看到这封信，说明我又在想你。虽然我的文笔不好，但是我写下的都是我的真情实感（可能有点肉麻）。
+　　第一次和你相处的时候，我的感受：怎么会有这么好的人啊？！每次和你出去玩的时候，我都是真心感到开心。我以前的生活只是天天呆在学校，没有太多朋友，平时也从来不会有人邀请我出去玩。自从你的出现，每次你邀请我的时候我都会格外兴奋与喜悦。
+`,
+`
+　　可能我平时看起来寡言少语，也不太会表达感情，但是可能就在那一秒，或者一个瞬间，我心里能翻涌出成千上万个想法。
+　　遇见你是我最幸运的事，谢谢你。你带我去了很多我没有去过的地方，你带我做了很多我没有做过的事情，和你在一起我非常开心。
+　　我忽然觉得，喜欢一个人，不是去拥有她的过去，而是从相遇的那一天开始，一步一步走进她的后来。所以我希望去喜欢你的温柔，包容你的倔强，保护你的脆弱，也接受你的锋芒。
+`,
+`
+　　平时都是你邀请我出去，但是今天！我诚挚的向你发出邀请！你愿意和我一起出去吗？是正式的那种哦！有些地方一个人去也行，但如果有你，也许会变得更有意思。
+　　不知道你愿不愿意呢？告诉我你的想法，我会安排好的。
+`
+]
+// =====================================================================
+let currentIndex = 0;
+let tipClickCount = 0;
+const tipTexts = [
+  "再考虑一下嘛~",
+  "真的没有时间吗？",
+  "还是就是不想和我一起呢？"
+];
+
+// 打开弹窗，开启背景模糊
+function openModal(){
+  mask.classList.add('show')
+  document.body.classList.add('modal-open');
+  currentIndex = 0;
+  tipClickCount = 0; //重置点击计数
+  renderText();
+}
+// 渲染文字 + 控制第三页按钮显示隐藏
+function renderText(){
+  textBox.innerText = letterList[currentIndex]
+  //控制第三页按钮
+  if(currentIndex === 2){
+    page3Btn.style.display = "flex";
+  }else{
+    page3Btn.style.display = "none";
+  }
+
+  // =========新增箭头控制代码=========
+  const prevBtn = document.querySelector('.prev')
+  const nextBtn = document.querySelector('.next')
+  //第一页，隐藏左箭头
+  if(currentIndex === 0){
+    prevBtn.style.display = 'none'
+  }else{
+    prevBtn.style.display = 'block'
+  }
+  //最后一页，隐藏右箭头
+  if(currentIndex === letterList.length - 1){
+    nextBtn.style.display = 'none'
+  }else{
+    nextBtn.style.display = 'block'
+  }
+}
+
+//下一页
+function nextPage(){
+  if(currentIndex < letterList.length -1){
+    currentIndex++;
+    renderText();
+  }
+}
+//上一页
+function prevPage(){
+  if(currentIndex > 0){
+    currentIndex--;
+    renderText();
+  }
+}
+//关闭弹窗，取消背景模糊
+function closeModal(){
+  mask.classList.remove('show')
+  document.body.classList.remove('modal-open');
+}
+//点击遮罩空白关闭
+function closeModalByMask(e){
+  if(e.target === mask){
+    closeModal()
+  }
+}
+// 信封点击：放大信封 + 打开弹窗
+function openEnvelope(el){
+  el.classList.add('zoom');
+  openModal();
+}
+
+//跳转页面，修改引号内地址
+function goToNewPage(){
+  location.href = "./ok.html";
+}
+
+//小寄语提示逻辑
+function showTip(){
+  if(tipClickCount < 3){
+    tipBox.innerText = tipTexts[tipClickCount];
+    tipBox.classList.add("show");
+    tipClickCount++;
+    setTimeout(()=>{
+      tipBox.classList.remove("show");
+    },1000)
+  }else{
+    //第四次点击，回到第一页
+    currentIndex = 0;
+    tipClickCount = 0;
+    closeModal();
+  }
+}
+</script>
+</body>
+</html>
